@@ -1,9 +1,9 @@
 import {Route, Routes} from 'react-router';
-import  Register  from './Register';
-import  Login  from './Login';
+import  Register  from './Pages/Registerpage/Register';
+import  Login  from './Pages/Loginpage/Login';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {registerpath} from './app/constants';
+import {ROUTES} from './app/constants';
 
 
 
@@ -14,8 +14,8 @@ import {registerpath} from './app/constants';
 function App() {
 
 
-    const expiredAt = useSelector((state) => state.auth.expiredAt);
-    const currentUser = useSelector((state) => state.auth.currentUser);
+    const expiredAt = useSelector((state) => state.expiredAt);
+    const currentUser = useSelector((state) => state.currentUser);
 
     const [loaded, setLoaded] = useState(false);
     const [authenticated, setAuthenticated] = useState(false);
@@ -40,9 +40,9 @@ function App() {
                 { authenticated ? (
                     <Route path="*" Component={() => <h1>Main</h1>}/>
                 ) : (
-                    <>  
-                        <Route path="*" Component={() => <Login/>} />            
-                        <Route path={registerpath} Component={() => <Register/>} />
+                    <>              
+                        <Route path={ROUTES.registerpath} Component={() => <Register/>} />
+                        <Route path="*" Component={() => <Login/>} />
                     </>
                 )           
                 }

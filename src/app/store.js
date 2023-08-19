@@ -1,7 +1,5 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import {configureStore} from '@reduxjs/toolkit';
 import authenticationReducer from '../features/authentication';
-import addUserReducer from '../features/authentication';
-import clearCurrentReducer from '../features/authentication';
 import {
     persistStore,
     persistReducer,
@@ -14,19 +12,13 @@ import {
   } from 'redux-persist'
 import storage from 'redux-persist/lib/storage';
 
-
-const rootReducer = combineReducers({
-    auth: authenticationReducer,
-    addUser: addUserReducer,
-    clearCurrent: clearCurrentReducer
-})
-
 const persistConfig = {
     key: 'root',
     storage,
+    blacklist: ['auth']
   }
 
-  const persistedReducer = persistReducer(persistConfig, rootReducer)  
+  const persistedReducer = persistReducer(persistConfig, authenticationReducer)  
 
     const store = configureStore({
         reducer: persistedReducer,
@@ -41,4 +33,9 @@ const persistConfig = {
     export const persistor = persistStore(store);
 
     export default store;
+
+
+
+
+
 

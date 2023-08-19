@@ -1,29 +1,32 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
 import { AUTORIZATION_TIMEOUT } from '../app/constants';
 
-const initialState = {
-    currentUser: "",
-    expiredAt: 0,
-    Users: []
-}    
+
+
+const usersAdapter = createEntityAdapter()
 
 export const authenticationSlice = createSlice({
     name: "authentication",
-    initialState, 
+    initialState: usersAdapter.getInitialState(
+        {
+        currentUser: 123,
+        expiredAt: 0,
+    }   
+    ), 
     reducers: {
-        authentication: (state, login) => {
-            state.currentUser = login.payload;
+        authentication: (state, id) => {
+            state.currentUser = id.payload;
             state.expiredAt = Date.now() + AUTORIZATION_TIMEOUT;
         },
-        addUser: (state, user) => {
-            state.Users.push(user);
-        },
+        addUser: usersAdapter.addOne,
         clearCurrent: (state) => {
-            state.currentUser = ""
-        }
+            state.currentUser = null
+        },
     }
 })
 
-export const {authentication, addUser, clearCurrent} = authenticationSlice.actions;
+export const {authentication, addUser, clearCurrent, addExpenses} = authenticationSlice.actions;
+
+export const usersSelectors = usersAdapter.getSelectors()
 
 export default authenticationSlice.reducer;

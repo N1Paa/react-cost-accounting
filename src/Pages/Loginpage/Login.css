@@ -5,7 +5,7 @@
     list-style-type: none;
 }
 
-.register_title {
+.login_title {
     font-size: 1.5rem;
 }
 
@@ -18,7 +18,7 @@ a:visited {
     color: #444444;
 }
 
-.register_wrapper {
+.login_wrapper {
     height: 450px;
     width: 320px;
     display: flex;
@@ -28,9 +28,9 @@ a:visited {
     color: #444444;
     box-shadow: 0px 0px 3px 1px;
     margin: 0;
-    position: absolute;
+    position: relative;
     left: calc(50% - 160px);
-    top: calc(50% - 200px)
+    top: calc(50% - 250px);
 }
 
 .modal_window {
@@ -38,6 +38,7 @@ a:visited {
     flex-direction: column;
     align-items: center;
     gap: 50px;
+    margin-bottom: 30px;
 }
 
 .submit_btn {
@@ -70,7 +71,7 @@ a:visited {
     padding: 5px;
 }
 
-.reg_error {
+.login_error {
     padding: 0;
     margin-top: 10px;
     height: 50px;

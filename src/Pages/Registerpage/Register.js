@@ -1,29 +1,30 @@
 import './Register.css'
-import { TextField } from './Textfield';
+import { TextField } from '../../components/Textfield';
 import React, {useState, useCallback} from 'react';
 import { Link } from 'react-router-dom';
-import { addUser } from './features/authentication';
-import { useDispatch, useSelector } from 'react-redux';
+import { addUser, usersSelectors } from '../../features/authentication';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import {loginpath} from './app/constants';
-
+import {ROUTES} from '../../app/constants';
+import store from '../../app/store';
+import { nanoid } from '@reduxjs/toolkit'; 
 
 
 function Register() {
 
     const [formState, setFormState] = useState({
         login: '',
-        password: '',
+        password: ''
     });
 
     const [errorState, setErrorState] = useState({
         error: ''
     });
     
-    const Users = useSelector((state) => state.addUser.Users)
-    
     const dispatch = useDispatch();
 
+    const users = usersSelectors.selectAll(store.getState())
+    
     const navigate = useNavigate();
 
     const handleChange = useCallback((newValue, valueKey) => {
@@ -37,28 +38,28 @@ function Register() {
     const handleSubmit = useCallback(
         (e) => {
             e.preventDefault(); 
-
-            if(formState.login === "" || formState.password === "") {
-                return setErrorState({error: 'Заполните все поля!'})
+            
+            if(!formState.login || !formState.password) {
+                    setErrorState({error: 'Заполните все поля!'})
             } else {
 
-                if(Users.find(el => el.payload.login === formState.login) === undefined ) {
-
-                    dispatch(addUser(formState));
-                    navigate(loginpath);
+                if(!users.some(el => el.user.login === formState.login)) {
+                    dispatch(addUser({id: nanoid(), user: formState}));
+                    navigate(ROUTES.loginpath);
                 } else {
-                    return setErrorState({error: 'Такой пользователь уже существует!'})
+                    setErrorState({error: 'Такой пользователь уже существует!'})
                 };
             } 
         },
-        [formState, dispatch, navigate, Users]
+        [formState, dispatch, navigate, users]
     );  
 
   return (
+  <div style={{height: 100 + "vh"}}>  
   <div className="register_wrapper">
-    <p className="register_title">Sign up</p>
+    <span className="register_title">Sign up</span>
     <div className = "reg_error">
-        <p>{errorState.error}</p>
+        <span>{errorState.error}</span>
     </div>
     <form onSubmit={handleSubmit} className="modal_window">
         <TextField
@@ -75,8 +76,9 @@ function Register() {
         <div className="form-group">
             <button type="submit" className="submit_btn">Create account</button>
         </div>
-        <Link to={loginpath}>Login</Link>
     </form>
+    <Link to={ROUTES.loginpath}>Login</Link>
+  </div>
   </div>  
   );
 }
