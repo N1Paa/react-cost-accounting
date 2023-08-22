@@ -2,7 +2,7 @@ import './Register.css'
 import { TextField } from '../../components/Textfield';
 import React, {useState, useCallback} from 'react';
 import { Link } from 'react-router-dom';
-import { addUser, usersSelectors } from '../../features/authentication';
+import { addUser, usersSelectors } from '../../features/users';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {ROUTES} from '../../app/constants';
@@ -24,7 +24,7 @@ function Register() {
     const dispatch = useDispatch();
 
     const users = usersSelectors.selectAll(store.getState())
-    
+
     const navigate = useNavigate();
 
     const handleChange = useCallback((newValue, valueKey) => {
@@ -40,14 +40,14 @@ function Register() {
             e.preventDefault(); 
             
             if(!formState.login || !formState.password) {
-                    setErrorState({error: 'Заполните все поля!'})
+                    setErrorState({error: 'Fill in all the fields!'})
             } else {
 
-                if(!users.some(el => el.user.login === formState.login)) {
-                    dispatch(addUser({id: nanoid(), user: formState}));
-                    navigate(ROUTES.loginpath);
+                if(!users.some(el => el.login === formState.login)) {
+                    dispatch(addUser({id: nanoid(), ...formState}));
+                    navigate(ROUTES.loginPath);
                 } else {
-                    setErrorState({error: 'Такой пользователь уже существует!'})
+                    setErrorState({error: 'The user already exists!'})
                 };
             } 
         },
@@ -55,7 +55,7 @@ function Register() {
     );  
 
   return (
-  <div style={{height: 100 + "vh"}}>  
+  <div className="register_wrapper_wrapper">  
   <div className="register_wrapper">
     <span className="register_title">Sign up</span>
     <div className = "reg_error">
@@ -66,18 +66,20 @@ function Register() {
             valueKey="login"
             onChange={handleChange}
             value={formState.login}
+            label="login"
         />
         <TextField
             valueKey="password"
             type="password"
             onChange={handleChange}
             value={formState.password}
+            label="password"
         />
         <div className="form-group">
             <button type="submit" className="submit_btn">Create account</button>
         </div>
     </form>
-    <Link to={ROUTES.loginpath}>Login</Link>
+    <Link to={ROUTES.loginPath}>Login</Link>
   </div>
   </div>  
   );

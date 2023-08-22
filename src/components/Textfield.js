@@ -2,13 +2,12 @@ import React, { memo, useState, useCallback, useEffect } from 'react';
 
 
 
-const TextFieldImpl = ({value: propsValue, valueKey, onChange, type}) => {
+const TextFieldImpl = ({value: propsValue, valueKey, onChange, type, validate, label}) => {
 
     const [value, setValue] = useState(propsValue);
 
     const onBlur = useCallback(() => {
         let newValue = value;
-
         onChange(newValue, valueKey);
     }, [value, valueKey, onChange]);
 
@@ -22,14 +21,14 @@ const TextFieldImpl = ({value: propsValue, valueKey, onChange, type}) => {
         setValue(propsValue)
     }, [propsValue]);
 
-    return (
+    return (    
         <div className="form-group">
-            <label htmlFor={type} className="label_control">{valueKey}</label>
+            <label htmlFor={type} className="label_control">{label}</label>
             <input className="input_text form_input"
             type={type || "text"} 
             id={valueKey}
             value = {value}
-            onChange={(ev) => setValue(ev.target.value)}
+            onChange={(ev) => {if(validate) {setValue(validate(ev.target.value))} else {setValue((ev.target.value))}}}
             onBlur={onBlur}
             onKeyDown={onKeyDown} 
             />

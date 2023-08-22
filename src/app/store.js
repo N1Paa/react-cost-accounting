@@ -1,5 +1,7 @@
-import {configureStore} from '@reduxjs/toolkit';
-import authenticationReducer from '../features/authentication';
+import {combineReducers, configureStore} from '@reduxjs/toolkit';
+import {authenticationReducer} from '../features/authentication';
+import { usersReducer } from '../features/users';
+import { historyReducer }  from '../features/history';
 import {
     persistStore,
     persistReducer,
@@ -15,10 +17,16 @@ import storage from 'redux-persist/lib/storage';
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['auth']
   }
 
-  const persistedReducer = persistReducer(persistConfig, authenticationReducer)  
+
+  const rootReducer = combineReducers({
+    users: usersReducer,
+    auth: authenticationReducer,
+    history: historyReducer
+  })
+
+  const persistedReducer = persistReducer(persistConfig, rootReducer)  
 
     const store = configureStore({
         reducer: persistedReducer,
@@ -33,9 +41,3 @@ const persistConfig = {
     export const persistor = persistStore(store);
 
     export default store;
-
-
-
-
-
-

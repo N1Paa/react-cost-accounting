@@ -6,7 +6,7 @@ import { authentication, clearCurrent } from '../../features/authentication';
 import { Link } from 'react-router-dom';
 import {ROUTES} from '../../app/constants';
 import store from '../../app/store';
-import {usersSelectors} from '../../features/authentication';
+import {usersSelectors} from '../../features/users';
 
 
 function Login() {
@@ -15,7 +15,7 @@ function Login() {
 
     const users = usersSelectors.selectAll(store.getState());
 
-    const expiredAt = useSelector((state) => state.expiredAt);
+    const expiredAt = useSelector((state) => state.auth.expiredAt);
 
     const [formState, setFormState] = useState({
         login: '',
@@ -39,16 +39,16 @@ function Login() {
             ev.preventDefault();
 
             if(!formState.login || !formState.password) {
-                    setErrorState({error: 'Заполните все поля!'})
+                    setErrorState({error: 'Fill in all the fields!'})
             } else {
 
-                if(!users.some(el => el.user.login === formState.login) || !users.some(el => el.user.password === formState.password)) {
+                if(!users.some(el => el.login === formState.login && el.password === formState.password)) {
 
-                    setErrorState({error: 'Неверное имя пользователя или пароль!'})
+                    setErrorState({error: 'Uncorrect username or password!'})
 
                 } else {
-                    console.log('Вы успешно вошли!');
-                    const id = users.find((e) => e.user.login === formState.login).id
+                    console.log('Login successful!');
+                    const id = users.find((e) => e.login === formState.login).id
                     dispatch(authentication(id));
                 } 
             } 
@@ -61,11 +61,11 @@ function Login() {
             if(expiredAt < Date.now()) {
                 dispatch(clearCurrent())
             }
-        }
+        }, [expiredAt, dispatch]
     )
     
   return (
-  <div style={{height: 100 + "vh"}}>
+  <div className="login_wrapper_wrapper" style={{height: 100 + "vh"}}>
   <div className="login_wrapper">
     <span className="login_title">Login</span>
     <div className = "login_error">
@@ -76,18 +76,20 @@ function Login() {
             valueKey="login"
             onChange={handleChange}
             value={formState.login}
+            label="login"
         />
         <TextField
             valueKey="password"
             type="password"
             onChange={handleChange}
             value={formState.password}
+            label="password"
         />
         <div className="form-group">
             <button type="submit" className="submit_btn">Login</button>
         </div>
     </form>
-    <Link to={ROUTES.registerpath}>Sign Up</Link>
+    <Link to={ROUTES.registerPath}>Sign Up</Link>
   </div>
   </div>  
   );
